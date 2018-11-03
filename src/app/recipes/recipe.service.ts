@@ -1,13 +1,15 @@
 import {Recipe} from './recipe.model';
-import {EventEmitter} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Ingredient} from '../shared/ingredient.model';
+import {ShoppingListService} from '../shopping-list/shopping-list.service';
 
+@Injectable()
 export class RecipeService {
 
-  recipeSelected = new EventEmitter<Recipe>();
   private recipes: Recipe[] = [
     new Recipe('Tasty Schitzel', 'A super tasty schitzel - just awesome!',
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Oscar_schnitzel_at_Grilli_Toro.jpg/1280px-Oscar_schnitzel_at_Grilli_Toro.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/' +
+      'Oscar_schnitzel_at_Grilli_Toro.jpg/1280px-Oscar_schnitzel_at_Grilli_Toro.jpg',
       [
         new Ingredient('Meat', 1),
         new Ingredient('French Fries', 20)
@@ -20,7 +22,16 @@ export class RecipeService {
       ])
   ];
 
+  recipeSelected = new EventEmitter<Recipe>();
+
+  constructor(private slService: ShoppingListService) {
+  }
+
   getRecipes(): Recipe[] {
     return this.recipes.slice(); // Returns a copy, not a reference
+  }
+
+  addIngredientsToShoppingList(ingredients: Ingredient[]) {
+    this.slService.addIngredients(ingredients);
   }
 }
